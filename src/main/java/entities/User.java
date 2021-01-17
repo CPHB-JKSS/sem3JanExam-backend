@@ -80,7 +80,7 @@ public class User implements Serializable {
   public List<Role> getRoleList() {
     return roleList;
   }
-
+  
   public void setRoleList(List<Role> roleList) {
     this.roleList = roleList;
   }
