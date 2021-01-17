@@ -36,7 +36,7 @@ public class Sport implements Serializable {
     public Sport(@NotNull String sportName, @NotNull String sportDescription) {
         this.sportName = sportName;
         this.sportDescription = sportDescription;
-        this.sportTeamList = new ArrayList<SportTeam>();
+        this.sportTeamList = new ArrayList<>();
     }
 
     public Long getId() {
