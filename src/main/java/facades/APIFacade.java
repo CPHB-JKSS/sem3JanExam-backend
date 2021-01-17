@@ -100,14 +100,12 @@ public class APIFacade {
     public SportTeamDTO addSportTeam(String name, Integer price, Integer minAge, Integer maxAge, String sportString) {
         EntityManager em = emf.createEntityManager();
         Sport sport;
+        SportTeam sportTeam;
         try {
             sport = em.find(Sport.class, sportString);
-        } finally {
-            em.close();
-        }
-        System.out.println(sport.getSportName());
-        SportTeam sportTeam = new SportTeam(name, price, minAge, maxAge, sport);
-        try {
+            System.out.println(sport.getSportName());
+            sportTeam = new SportTeam(name, price, minAge, maxAge, sport);
+
             em.getTransaction().begin();
             em.persist(sportTeam);
             em.getTransaction().commit();
