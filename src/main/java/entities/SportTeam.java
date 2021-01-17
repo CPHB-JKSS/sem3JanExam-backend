@@ -1,5 +1,7 @@
 package entities;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -22,18 +24,22 @@ public class SportTeam implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "teamName", length = 20)
+    @Expose
     private String teamName;
     @Basic(optional = false)
     @NotNull
     @Column(name = "pricePerYear")
+    @Expose
     private Integer pricePerYear; //multiply by 100 for whole danish 'Kroner'.
     @Basic(optional = false)
     @NotNull
     @Column(name = "minAge")
+    @Expose
     private Integer minAge;
     @Basic(optional = false)
     @NotNull
     @Column(name = "maxAge")
+    @Expose
     private Integer maxAge;
 
     @ManyToOne
@@ -42,7 +48,7 @@ public class SportTeam implements Serializable {
     public SportTeam() {
     }
 
-    public SportTeam(@NotNull String teamName, @NotNull Integer pricePerYear, @NotNull Integer minAge, @NotNull Integer maxAge, Sport sport) {
+    public SportTeam(@NotNull String teamName, @NotNull Integer pricePerYear, @NotNull Integer minAge, @NotNull Integer maxAge, @NotNull Sport sport) {
         this.teamName = teamName;
         this.pricePerYear = pricePerYear;
         this.minAge = minAge;

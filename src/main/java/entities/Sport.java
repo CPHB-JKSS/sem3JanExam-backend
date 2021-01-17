@@ -1,5 +1,7 @@
 package entities;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -23,10 +25,12 @@ public class Sport implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "sportName", length = 20)
+    @Expose
     private String sportName;
     @Basic(optional = false)
     @NotNull
     @Column(name = "sportDescription", length = 100)
+    @Expose
     private String sportDescription;
 
     @OneToMany(mappedBy = "sport", cascade = CascadeType.PERSIST)

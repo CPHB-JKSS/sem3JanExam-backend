@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dtos.SportDTO;
 import dtos.SportTeamDTO;
+import entities.SportTeam;
 import facades.APIFacade;
 import utils.EMF_Creator;
 
@@ -11,6 +12,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +37,6 @@ public class PublicResource {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getSports() {
         List<SportDTO> sportsList = FACADE.getAllSports();
-        System.out.println(sportsList);
         return Response.ok(GSON.toJson(sportsList)).build();
     }
 
@@ -46,7 +47,11 @@ public class PublicResource {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getTeams() {
         List<SportTeamDTO> teamsList = FACADE.getAllTeams();
-        System.out.println(teamsList);
-        return Response.ok(GSON.toJson("teamsList")).build();
+        List<String> teamNamesList = new ArrayList<>();
+        teamsList.forEach((SportTeamDTO sportTeamDTO) -> teamNamesList.add(sportTeamDTO.getName()));
+
+        Gson gsonExclude = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Gson gson = new GsonBuilder().create();
+        return Response.ok(gson.toJson(teamNamesList)).build();
     }
 }
