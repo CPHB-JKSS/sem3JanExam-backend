@@ -68,4 +68,21 @@ public class AdminResource {
             }
         }
     }
+
+    @Path("team/remove")
+    @POST
+    @Produces({MediaType.APPLICATION_JSON})
+    public void removeTeam(@HeaderParam("x-access-token") String token, String body) {
+
+        if (!body.equals("")) {
+            JsonObject JSONBody = JsonParser.parseString(body).getAsJsonObject();
+            String teamName = (JSONBody.get("teamName").getAsString());
+
+            try {
+                FACADE.removeSportTeam(teamName);
+            } catch (Exception e) {
+                System.out.println("Error: " + e);
+            }
+        }
+    }
 }

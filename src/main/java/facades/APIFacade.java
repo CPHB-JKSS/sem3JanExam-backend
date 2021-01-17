@@ -116,11 +116,11 @@ public class APIFacade {
     }
 
     //TODO public String removeSportTeam(String id) {}
-    public void removeSportTeam(String id) {
+    public void removeSportTeam(String name) {
         EntityManager em = emf.createEntityManager();
         SportTeam sportTeam;
         try {
-            sportTeam = em.find(SportTeam.class, id);
+            sportTeam = em.find(SportTeam.class, name);
             em.getTransaction().begin();
             em.remove(sportTeam);
             em.getTransaction().commit();
