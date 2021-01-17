@@ -115,6 +115,25 @@ public class APIFacade {
         return new SportTeamDTO(sportTeam);
     }
 
+    //TODO public SportTeamDTO editSportTeam(SportTeamDTO sportTeamDTO) {}
+    public SportTeamDTO editSportTeam(String name, Integer price, Integer minAge, Integer maxAge, String sportString) {
+        EntityManager em = emf.createEntityManager();
+        SportTeam sportTeam;
+        try {
+            sportTeam = em.find(SportTeam.class, name);
+            sportTeam.setMinAge(minAge);
+            sportTeam.setMaxAge(maxAge);
+            sportTeam.setPricePerYear(price);
+            sportTeam.setSport(em.find(Sport.class, sportString));
+            em.getTransaction().begin();
+            em.persist(sportTeam);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new SportTeamDTO(sportTeam);
+    }
+
     //TODO public String removeSportTeam(String id) {}
     public void removeSportTeam(String name) {
         EntityManager em = emf.createEntityManager();

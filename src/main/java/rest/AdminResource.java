@@ -85,4 +85,24 @@ public class AdminResource {
             }
         }
     }
+
+    @Path("team/edit")
+    @PUT
+    @Produces({MediaType.APPLICATION_JSON})
+    public void editTeam(@HeaderParam("x-access-token") String token, String body) {
+
+        if (!body.equals("")) {
+            JsonObject JSONBody = JsonParser.parseString(body).getAsJsonObject();
+            String teamName = (JSONBody.get("teamName").getAsString());
+            Integer pricePerYear = (JSONBody.get("pricePerYear").getAsInt())*100; //Value equal to 'øre'.
+            Integer minAge = JSONBody.get("minAge").getAsInt();
+            Integer maxAge = JSONBody.get("maxAge").getAsInt();
+            String sport = JSONBody.get("sport").getAsString();
+            try {
+                SportTeamDTO sportTeamDTO = FACADE.editSportTeam(teamName, pricePerYear, minAge, maxAge, sport);
+            } catch (Exception e) {
+                System.out.println("Error: " + e);
+            }
+        }
+    }
 }

@@ -40,18 +40,11 @@ public class PublicResource {
         return Response.ok(GSON.toJson(sportsList)).build();
     }
 
-
-    //TODO please fix stack overflow
     @Path("teams")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public Response getTeams() {
         List<SportTeamDTO> teamsList = FACADE.getAllTeams();
-        List<String> teamNamesList = new ArrayList<>();
-        teamsList.forEach((SportTeamDTO sportTeamDTO) -> teamNamesList.add(sportTeamDTO.getName()));
-
-        Gson gsonExclude = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        Gson gson = new GsonBuilder().create();
         return Response.ok(GSON.toJson(teamsList)).build();
     }
 }
