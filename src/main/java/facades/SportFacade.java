@@ -52,9 +52,9 @@ public class SportFacade {
     }
 
     //TODO public SportDTO addSport(SportDTO sportDTO) {}
-    public SportDTO addSport(SportDTO sportDTO) {
+    public SportDTO addSport(String name, String desc) {
         EntityManager em = emf.createEntityManager();
-        Sport sport = new Sport(sportDTO.getName(), sportDTO.getDescription());
+        Sport sport = new Sport(name, desc);
         try {
             em.getTransaction().begin();
             em.persist(sport);
