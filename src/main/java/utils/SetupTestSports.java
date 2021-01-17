@@ -22,10 +22,6 @@ public class SetupTestSports {
     SportTeam basketballTeamJunior = new SportTeam("Junior: Basketball", 300000, 10, 15, BasketballSport);
 
     em.getTransaction().begin();
-    footballSport.addTeam(footballTeamSenior);
-    footballSport.addTeam(footballTeamJunior);
-    footballSport.addTeam(basketballTeamSenior);
-    footballSport.addTeam(basketballTeamJunior);
 
     em.persist(footballSport);
     em.persist(BasketballSport);

@@ -52,6 +52,6 @@ public class PublicResource {
 
         Gson gsonExclude = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Gson gson = new GsonBuilder().create();
-        return Response.ok(gson.toJson(teamNamesList)).build();
+        return Response.ok(GSON.toJson(teamsList)).build();
     }
 }

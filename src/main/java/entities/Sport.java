@@ -33,8 +33,8 @@ public class Sport implements Serializable {
     @Expose
     private String sportDescription;
 
-    @OneToMany(mappedBy = "sport", cascade = CascadeType.PERSIST)
-    private List<SportTeam> sportTeamList;
+    //TODO try removing this reference to fix circular loop when serializing with GSON
+
 
     public Sport() {
     }
@@ -42,7 +42,6 @@ public class Sport implements Serializable {
     public Sport(@NotNull String sportName, @NotNull String sportDescription) {
         this.sportName = sportName;
         this.sportDescription = sportDescription;
-        this.sportTeamList = new ArrayList<>();
     }
 
     /*public Long getId() {
@@ -65,15 +64,5 @@ public class Sport implements Serializable {
         this.sportDescription = sportDescription;
     }
 
-    public List<SportTeam> getSportTeamList() {
-        return sportTeamList;
-    }
 
-    public void setSportTeamList(List<SportTeam> sportTeamList) {
-        this.sportTeamList = sportTeamList;
-    }
-
-    public void addTeam(SportTeam sportTeam) {
-        this.sportTeamList.add(sportTeam);
-    }
 }
