@@ -3,7 +3,7 @@ package dtos;
 import entities.Sport;
 
 public class SportDTO {
-    private String name, description;
+    private final String name, description;
 
     public SportDTO(Sport sport) {
         this.name = sport.getSportName();

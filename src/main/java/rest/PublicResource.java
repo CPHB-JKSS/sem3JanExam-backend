@@ -2,11 +2,9 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import dtos.SportDTO;
-import entities.Sport;
-import facades.SportFacade;
+import dtos.SportTeamDTO;
+import facades.APIFacade;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
@@ -23,7 +21,7 @@ public class PublicResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
 
-    private static final SportFacade FACADE = SportFacade.getSportFacade(EMF);
+    private static final APIFacade FACADE = APIFacade.getSportFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @GET
@@ -36,7 +34,19 @@ public class PublicResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public Response getSports() {
-        List<SportDTO> SportsList = FACADE.getAllSports();
-        return Response.ok(GSON.toJson(SportsList)).build();
+        List<SportDTO> sportsList = FACADE.getAllSports();
+        System.out.println(sportsList);
+        return Response.ok(GSON.toJson(sportsList)).build();
+    }
+
+
+    //TODO please fix stack overflow
+    @Path("teams")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getTeams() {
+        List<SportTeamDTO> teamsList = FACADE.getAllTeams();
+        System.out.println(teamsList);
+        return Response.ok(GSON.toJson("teamsList")).build();
     }
 }

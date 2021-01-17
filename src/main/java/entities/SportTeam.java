@@ -14,9 +14,11 @@ import java.util.List;
 public class SportTeam implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "teamName", length = 20)
@@ -48,9 +50,9 @@ public class SportTeam implements Serializable {
         this.sport = sport;
     }
 
-    public Long getId() {
+    /*public Long getId() {
         return id;
-    }
+    }*/
 
     public String getTeamName() {
         return teamName;

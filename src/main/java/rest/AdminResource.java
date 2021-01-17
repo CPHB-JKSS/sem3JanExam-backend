@@ -5,7 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dtos.SportDTO;
-import facades.SportFacade;
+import dtos.SportTeamDTO;
+import facades.APIFacade;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
@@ -20,7 +21,7 @@ public class AdminResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
 
-    private static final SportFacade FACADE = SportFacade.getSportFacade(EMF);
+    private static final APIFacade FACADE = APIFacade.getSportFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @GET
@@ -41,6 +42,27 @@ public class AdminResource {
 
             try {
                 SportDTO sportDTO = FACADE.addSport(sportName, sportDesc);
+            } catch (Exception e) {
+                System.out.println("Error: " + e);
+            }
+        }
+    }
+
+    @Path("team/add")
+    @POST
+    @Produces({MediaType.APPLICATION_JSON})
+    public void addTeam(@HeaderParam("x-access-token") String token, String body) {
+
+        if (!body.equals("")) {
+            JsonObject JSONBody = JsonParser.parseString(body).getAsJsonObject();
+            String teamName = (JSONBody.get("teamName").getAsString());
+            Integer pricePerYear = (JSONBody.get("pricePerYear").getAsInt())*100; //Value equal to 'øre'.
+            Integer minAge = JSONBody.get("minAge").getAsInt();
+            Integer maxAge = JSONBody.get("maxAge").getAsInt();
+            String sport = JSONBody.get("sport").getAsString();
+
+            try {
+                SportTeamDTO sportTeamDTO = FACADE.addSportTeam(teamName, pricePerYear, minAge, maxAge, sport);
             } catch (Exception e) {
                 System.out.println("Error: " + e);
             }
