@@ -1,25 +1,31 @@
 package rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import entities.Role;
+import entities.Sport;
+import entities.SportTeam;
 import entities.User;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
+import org.eclipse.persistence.jpa.jpql.Assert;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
 
+import javax.json.Json;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 //Disabled
@@ -28,10 +34,15 @@ public class PublicResourceTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
 
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
-    
+
+    private Sport footballSport, BasketballSport;
+    private SportTeam footballTeamSenior, footballTeamJunior, basketballTeamSenior, basketballTeamJunior;
+
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
         return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
@@ -63,11 +74,22 @@ public class PublicResourceTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
+
+        footballSport = new Sport("Football", "This a football sport description");
+        BasketballSport = new Sport("Basketball", "This a Basketball sport description");
+
+        footballTeamSenior = new SportTeam("Senior: Football", 300000, 45, 99, footballSport);
+        footballTeamJunior = new SportTeam("Junior: Football", 250000, 10, 15, footballSport);
+        basketballTeamSenior = new SportTeam("Senior: Basketball", 350000, 45, 99, BasketballSport);
+        basketballTeamJunior = new SportTeam("Junior: Basketball", 300000, 10, 15, BasketballSport);
+
         try {
             em.getTransaction().begin();
             //Delete existing users and roles to get a "fresh" database
             em.createQuery("delete from User").executeUpdate();
             em.createQuery("delete from Role").executeUpdate();
+            em.createNamedQuery("SportTeam.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Sport.deleteAllRows").executeUpdate();
 
             Role userRole = new Role("user");
             Role adminRole = new Role("admin");
@@ -83,6 +105,13 @@ public class PublicResourceTest {
             em.persist(user);
             em.persist(admin);
             em.persist(both);
+
+            em.persist(footballSport);
+            em.persist(BasketballSport);
+            em.persist(footballTeamSenior);
+            em.persist(footballTeamJunior);
+            em.persist(basketballTeamSenior);
+            em.persist(basketballTeamJunior);
             //System.out.println("Saved test data to database");
             em.getTransaction().commit();
         } finally {
@@ -116,109 +145,30 @@ public class PublicResourceTest {
     }
 
     @Test
-    public void testRestNoAuthenticationRequired() {
+    public void testRestPublicSportsEndpoint() {
         given()
                 .contentType("application/json")
                 .when()
-                .get("/info/").then()
+                .get("/public/sports").then()
                 .statusCode(200)
-                .body("msg", equalTo("Hello anonymous"));
+                .body(CoreMatchers.allOf(
+                        containsString("Basketball"),
+                        containsString("Football")
+                ));
     }
 
     @Test
-    public void testRestForAdmin() {
-        login("admin", "test");
+    public void testRestPublicTeamsEndpoint() {
         given()
                 .contentType("application/json")
-                .accept(ContentType.JSON)
-                .header("x-access-token", securityToken)
                 .when()
-                .get("/info/admin").then()
+                .get("/public/teams").then()
                 .statusCode(200)
-                .body("msg", equalTo("Hello to (admin) User: admin"));
+                .body(CoreMatchers.allOf(
+                        containsString("Junior: Basketball"),
+                        containsString("Junior: Football"),
+                        containsString("Senior: Basketball"),
+                        containsString("Senior: Football")
+                ));
     }
-
-    @Test
-    public void testRestForUser() {
-        login("user", "test");
-        given()
-                .contentType("application/json")
-                .header("x-access-token", securityToken)
-                .when()
-                .get("/info/user").then()
-                .statusCode(200)
-                .body("msg", equalTo("Hello to User: user"));
-    }
-
-    @Test
-    public void testAutorizedUserCannotAccesAdminPage() {
-        login("user", "test");
-        given()
-                .contentType("application/json")
-                .header("x-access-token", securityToken)
-                .when()
-                .get("/info/admin").then() //Call Admin endpoint as user
-                .statusCode(401);
-    }
-
-    @Test
-    public void testAutorizedAdminCannotAccesUserPage() {
-        login("admin", "test");
-        given()
-                .contentType("application/json")
-                .header("x-access-token", securityToken)
-                .when()
-                .get("/info/user").then() //Call User endpoint as Admin
-                .statusCode(401);
-    }
-
-    @Test
-    public void testRestForMultiRole1() {
-        login("user_admin", "test");
-        given()
-                .contentType("application/json")
-                .accept(ContentType.JSON)
-                .header("x-access-token", securityToken)
-                .when()
-                .get("/info/admin").then()
-                .statusCode(200)
-                .body("msg", equalTo("Hello to (admin) User: user_admin"));
-    }
-
-    @Test
-    public void testRestForMultiRole2() {
-        login("user_admin", "test");
-        given()
-                .contentType("application/json")
-                .header("x-access-token", securityToken)
-                .when()
-                .get("/info/user").then()
-                .statusCode(200)
-                .body("msg", equalTo("Hello to User: user_admin"));
-    }
-
-    @Test
-    public void userNotAuthenticated() {
-        logOut();
-        given()
-                .contentType("application/json")
-                .when()
-                .get("/info/user").then()
-                .statusCode(403)
-                .body("code", equalTo(403))
-                .body("message", equalTo("Not authenticated - do login"));
-    }
-
-    @Test
-    public void adminNotAuthenticated() {
-        logOut();
-        given()
-                .contentType("application/json")
-                .when()
-                .get("/info/user").then()
-                .statusCode(403)
-                .body("code", equalTo(403))
-                .body("message", equalTo("Not authenticated - do login"));
-    }
-
 }
