@@ -50,6 +50,8 @@ public class APIFacadeTest {
 
         try {
             em.getTransaction().begin();
+            em.createNamedQuery("SportTeam.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Sport.deleteAllRows").executeUpdate();
             em.persist(footballSport);
             em.persist(BasketballSport);
             em.persist(footballTeamSenior);
@@ -84,6 +86,8 @@ public class APIFacadeTest {
     @Test
     void testRemoveSport() {
         assertEquals(2, FACADE.getAllSports().size(), "Expects 2 sports in the database BEFORE removing");
+        FACADE.removeSportTeam("Senior: Basketball");//Is referencing 'Basketball'
+        FACADE.removeSportTeam("Junior: Basketball");//Is referencing 'Basketball'
         FACADE.removeSport("BasketBall");
         assertEquals(1, FACADE.getAllSports().size(), "Expects 1 sports in the database AFTER removing");
     }
@@ -116,7 +120,7 @@ public class APIFacadeTest {
         assertEquals(4, FACADE.getAllTeams().size(), "Expects 4 teams in the database");
     }
 
-    //TODO public void testEditPerson()
+    //THIS METHOD IS FOR REFERENCE
     @Test
     public void testEditPerson() {
         /*p2.addPhone(new Phone("90909090",""));

@@ -14,6 +14,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "Sport")
+@NamedQuery(name = "Sport.deleteAllRows", query = "DELETE from Sport")
 public class Sport implements Serializable {
 
     private static final long serialVersionUID = 1L;
