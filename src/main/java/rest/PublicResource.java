@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dtos.SportDTO;
 import dtos.SportTeamDTO;
-import entities.SportTeam;
 import facades.APIFacade;
 import utils.EMF_Creator;
 
@@ -12,7 +11,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +21,7 @@ public class PublicResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
 
-    private static final APIFacade FACADE = APIFacade.getSportFacade(EMF);
+    private static final APIFacade FACADE = APIFacade.getAPIFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @GET

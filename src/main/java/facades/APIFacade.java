@@ -29,7 +29,7 @@ public class APIFacade {
      * @param _emf
      * @return an instance of this facade class.
      */
-    public static APIFacade getSportFacade(EntityManagerFactory _emf) {
+    public static APIFacade getAPIFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
             instance = new APIFacade();
@@ -43,11 +43,11 @@ public class APIFacade {
 
     /* Sport methods */
     //TODO public SportDTO getSport(String id) {}
-    public SportDTO getSportDTO(String id) {
+    public SportDTO getSportDTO(String name) {
         EntityManager em = emf.createEntityManager();
         Sport sport;
         try {
-            sport = em.find(Sport.class, id);
+            sport = em.find(Sport.class, name);
         } finally {
             em.close();
         }
