@@ -16,9 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class APIFacadeTest {
 
     private static EntityManagerFactory emf;
-    private static APIFacade facade;
+    private static APIFacade FACADE;
 
-    private Person p1, p2, p3, p4;
+    private Sport footballSport, BasketballSport;
+    private SportTeam footballTeamSenior, footballTeamJunior, basketballTeamSenior, basketballTeamJunior;
 
     public APIFacadeTest() {
     }
@@ -26,12 +27,12 @@ public class APIFacadeTest {
     @BeforeAll
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
-        facade = APIFacade.getAPIFacade(emf);
+        FACADE = APIFacade.getAPIFacade(emf);
     }
 
     @AfterAll
     public static void tearDownClass() {
-//        Clean up database after test is done or use a persistence unit with drop-and-create to start up clean on every test
+        //Clean up database after test is done or use a persistence unit with drop-and-create to start up clean on every test
     }
 
     // Setup the DataBase in a known state BEFORE EACH TEST
@@ -39,13 +40,13 @@ public class APIFacadeTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        Sport footballSport = new Sport("Football", "This a football sport description");
-        Sport BasketballSport = new Sport("Basketball", "This a Basketball sport description");
+        footballSport = new Sport("Football", "This a football sport description");
+        BasketballSport = new Sport("Basketball", "This a Basketball sport description");
 
-        SportTeam footballTeamSenior = new SportTeam("Senior: football", 300000, 45, 99, footballSport);
-        SportTeam footballTeamJunior = new SportTeam("Junior: football", 250000, 10, 15, footballSport);
-        SportTeam basketballTeamSenior = new SportTeam("Senior: Basketball", 350000, 45, 99, BasketballSport);
-        SportTeam basketballTeamJunior = new SportTeam("Junior: Basketball", 300000, 10, 15, BasketballSport);
+        footballTeamSenior = new SportTeam("Senior: football", 300000, 45, 99, footballSport);
+        footballTeamJunior = new SportTeam("Junior: football", 250000, 10, 15, footballSport);
+        basketballTeamSenior = new SportTeam("Senior: Basketball", 350000, 45, 99, BasketballSport);
+        basketballTeamJunior = new SportTeam("Junior: Basketball", 300000, 10, 15, BasketballSport);
 
         try {
             em.getTransaction().begin();
@@ -66,49 +67,53 @@ public class APIFacadeTest {
         //Remove any data after each test was run
     }
 
+    //TODO addSport
     @Test
-    public void testGetS() {
-        assertEquals(4, facade.getPersons().size(), "Expects four members in the database");
+    void testAddSport() {
+        assertEquals(2, FACADE.getAllSports().size(), "Expects 2 sports in the database BEFORE adding");
+        FACADE.addSport("Handball", "This a Handball sport description");
+        assertEquals(3, FACADE.getAllSports().size(), "Expects 3 sports in the database AFTER adding");
+    }
+
+    //TODO editSport
+    @Test
+    void testEditSport() {
+        //FACADE.editSport()
     }
 
     @Test
-    public void testGetPersonsByHobby() {
-        assertEquals(3, facade.getPersonsByHobby("Baking").size(), "Expects three differen members sharing the same hobby 'Baking'");
+    void testRemoveSport() {
+        assertEquals(2, FACADE.getAllSports().size(), "Expects 2 sports in the database BEFORE removing");
+        FACADE.removeSport("BasketBall");
+        assertEquals(1, FACADE.getAllSports().size(), "Expects 1 sports in the database AFTER removing");
     }
 
     @Test
-    public void testGetPersonsByZip() {
-        assertEquals(2, facade.getPersonsByZip("2200").size(), "Expects two differen members sharing the same zipcode '2200'");
+    void testGetAllSport() {
+        assertEquals(2, FACADE.getAllSports().size(), "Expects 2 sports in the database");
     }
 
     @Test
-    public void testGetSamePersonByPhone() {
-        PersonDTO p1 = facade.getPersonByPhone("20202020");
-        PersonDTO p2 = facade.getPersonByPhone("30303030");
-        assertEquals(p1.getEmail(), p2.getEmail(), "Expects the email address of the two different objects, to be equal, as the two different phone numbers are assigned to the same person");
+    void testAddSportTeam() {
+        assertEquals(4, FACADE.getAllTeams().size(), "Expects 4 teams in the database BEFORE adding");
+        FACADE.addSportTeam("Senior: football (2)", 300000, 45, 99, "Football");
+        assertEquals(5, FACADE.getAllTeams().size(), "Expects 5 teams in the database AFTER adding");
+    }
+    //TODO editTeam
+    @Test
+    void testEditSportTeam() {
+        //FACADE.editSportTeam()
     }
 
     @Test
-    public void testGetDifferentPersonByPhone() {
-        PersonDTO p1 = facade.getPersonByPhone("20202020");
-        PersonDTO p2 = facade.getPersonByPhone("50505050");
-        assertNotEquals(p1.getEmail(), p2.getEmail(), "Expects the email address of the two different objects, to be not be equal, as the two different phone numbers are assigned to different persons");
+    void testRemoveSportTeam() {
+        assertEquals(4, FACADE.getAllTeams().size(), "Expects 4 teams in the database BEFORE removing");
+        FACADE.removeSportTeam("Junior: Basketball");
+        assertEquals(3, FACADE.getAllTeams().size(), "Expects 3 teams in the database AFTER removing");
     }
-
     @Test
-    public void testAddPerson() {
-        Person p5 = new Person("Lars", "Larsen", "lars@mail.dk");
-        Address a2 = new Address("Tagensvej 110", "N/A");
-        Phone ph1 = new Phone("80808080", "");
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.persist(p5);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
-        assertEquals(5, facade.getPersons().size(), "Expects the list of persons recieved from the database, to be 5, after adding an additional person");
+    void testGetAllTeams() {
+        assertEquals(4, FACADE.getAllTeams().size(), "Expects 4 teams in the database");
     }
 
     //TODO public void testEditPerson()

@@ -42,7 +42,6 @@ public class APIFacade {
     }
 
     /* Sport methods */
-    //TODO public SportDTO getSport(String id) {}
     public SportDTO getSportDTO(String name) {
         EntityManager em = emf.createEntityManager();
         Sport sport;
@@ -67,7 +66,6 @@ public class APIFacade {
         return new SportDTO(sport);
     }
 
-    //TODO public SportTeamDTO editSportTeam(SportTeamDTO sportTeamDTO) {}
     public SportDTO editSport(String name, String description) {
         EntityManager em = emf.createEntityManager();
         Sport sport ;
@@ -84,7 +82,6 @@ public class APIFacade {
         return new SportDTO(sport);
     }
 
-    //TODO public String removeSport(String id) {}
     public void removeSport(String name) {
         EntityManager em = emf.createEntityManager();
         Sport sport;
@@ -113,7 +110,6 @@ public class APIFacade {
     }
 
     /* SportTeam methods */
-    //TODO public SportTeamDTO addSportTeam(SportTeamDTO sportTeamDTO) {}
     public SportTeamDTO addSportTeam(String name, Integer price, Integer minAge, Integer maxAge, String sportString) {
         EntityManager em = emf.createEntityManager();
         Sport sport;
@@ -132,7 +128,6 @@ public class APIFacade {
         return new SportTeamDTO(sportTeam);
     }
 
-    //TODO public SportTeamDTO editSportTeam(SportTeamDTO sportTeamDTO) {}
     public SportTeamDTO editSportTeam(String name, Integer price, Integer minAge, Integer maxAge, String sportString) {
         EntityManager em = emf.createEntityManager();
         SportTeam sportTeam;
@@ -151,7 +146,6 @@ public class APIFacade {
         return new SportTeamDTO(sportTeam);
     }
 
-    //TODO public String removeSportTeam(String id) {}
     public void removeSportTeam(String name) {
         EntityManager em = emf.createEntityManager();
         SportTeam sportTeam;
@@ -165,7 +159,6 @@ public class APIFacade {
         }
     }
 
-    //TODO public List<SportTeamDTO> getAllTeams() {}
     public List<SportTeamDTO> getAllTeams() {
         EntityManager em = emf.createEntityManager();
         List<SportTeamDTO> sportTeamDTOList;
