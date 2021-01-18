@@ -30,6 +30,7 @@ public class AdminResource {
         return "{\"msg\":\"admin\"}";
     }
 
+    /* SPORT METHODS */
     @Path("sport/add")
     @POST
     @Produces({MediaType.APPLICATION_JSON})
@@ -48,6 +49,41 @@ public class AdminResource {
         }
     }
 
+    @Path("sport/remove")
+    @POST
+    @Produces({MediaType.APPLICATION_JSON})
+    public void removeSport(@HeaderParam("x-access-token") String token, String body) {
+
+        if (!body.equals("")) {
+            JsonObject JSONBody = JsonParser.parseString(body).getAsJsonObject();
+            String sportName = (JSONBody.get("sportName").getAsString());
+
+            try {
+                FACADE.removeSport(sportName);
+            } catch (Exception e) {
+                System.out.println("Error: " + e);
+            }
+        }
+    }
+
+    @Path("sport/edit")
+    @PUT
+    @Produces({MediaType.APPLICATION_JSON})
+    public void editSport(@HeaderParam("x-access-token") String token, String body) {
+
+        if (!body.equals("")) {
+            JsonObject JSONBody = JsonParser.parseString(body).getAsJsonObject();
+            String sportName = (JSONBody.get("sportName").getAsString());
+            String description = JSONBody.get("description").getAsString();
+            try {
+                SportDTO sportDTO = FACADE.editSport(sportName, description);
+            } catch (Exception e) {
+                System.out.println("Error: " + e);
+            }
+        }
+    }
+
+    /* TEAM METHODS */
     @Path("team/add")
     @POST
     @Produces({MediaType.APPLICATION_JSON})

@@ -67,12 +67,29 @@ public class APIFacade {
         return new SportDTO(sport);
     }
 
+    //TODO public SportTeamDTO editSportTeam(SportTeamDTO sportTeamDTO) {}
+    public SportDTO editSport(String name, String description) {
+        EntityManager em = emf.createEntityManager();
+        Sport sport ;
+        try {
+            sport = em.find(Sport.class, name);
+            sport.setSportDescription(description);
+
+            em.getTransaction().begin();
+            em.persist(sport);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new SportDTO(sport);
+    }
+
     //TODO public String removeSport(String id) {}
-    public void removeSport(String id) {
+    public void removeSport(String name) {
         EntityManager em = emf.createEntityManager();
         Sport sport;
         try {
-            sport = em.find(Sport.class, id);
+            sport = em.find(Sport.class, name);
             em.getTransaction().begin();
             em.remove(sport);
             em.getTransaction().commit();
